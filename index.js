@@ -1,53 +1,59 @@
 const prompt = require('prompt-sync')();
 
-if (prompt("Deseja calcular a média das notas?[Y/n] ") === "Y") {
-    getNote();
-}
+console.log("Bem vindo ao cálculo de média das notas, comece inserindo notas para no mínimo 3 matérias");
+getNote();
 
 function getNote() {
-    var avarageNotes = [];
+    let averageNotes = [];
+    let input = [];
+    let discipline = 1;
+
     do {
-        var disciplines = [];
-        disciplines.push(prompt("Insira o nome da matéria: "));
-        var totalNotes = +prompt(`Quantas notas deseja calcular para ${disciplines}? `);
-        var notes = [];
+        const disciplineName = prompt(`Insira o nome da ${discipline++}ª matéria: `);
+        var totalNotes = +prompt(`Quantas notas deseja calcular para ${disciplineName}? `);
+
+        const notes = [];
         for (let i = 0; i < totalNotes; i++) {
-            notes.push(+prompt(`Insira a ${i + 1}ª nota: `));
+            notes.push(+prompt(`Insira a ${i + 1}ª nota de ${disciplineName}: `));
         }
-        avarageNotes.push(calculatesAverageNotes(disciplines, notes, totalNotes));
-        var moreDiscipline = prompt("Deseja inserir mais notas?[Y/n] ");
-    }
-    while (moreDiscipline === "Y");
-    const avarageAll = calculatesAverageAll(avarageNotes);
-    return console.log(avarageNotes, `A média geral é de: ${avarageAll}`);
+
+        input.push({
+            disciplina: disciplineName,
+            notas: notes
+        });
+
+        if (input.length > 3) {
+            var moreDisciplines = prompt("Deseja inserir mais matérias? [Y/n]");
+        }
+    } while (input.length < 3  || (moreDisciplines && moreDisciplines.toUpperCase() === "Y"));
+
+    averageNotes = calculatesAverageNotes(input, totalNotes);
+
+    return console.log(averageNotes);
 }
 
-function formatterDisciplineNotesAvarage(disciplines, notes, avarage) {
-    var disciplineNotesAvarageList = [];
-    var disciplineNotesAvarage = new Object();
-    for (let i = 0; i < disciplines.length; i++) {
-        disciplineNotesAvarageList.push(disciplineNotesAvarage[`${disciplines}`] = `[${notes}]`);
-    }
-    disciplineNotesAvarage['média'] = avarage.toFixed(2);
-    return disciplineNotesAvarage;
-}
+function calculatesAverageNotes(input) {
+    for (let i = 0; i < input.length; i++) {
+      
+        var average = 0;
+        var totalNotes = 0;
+        var averageAll = 0;
 
-function calculatesAverageNotes(disciplines, notes, totalNotes) {
-    var avarage = 0;
-    for (let i = 0; i < notes.length; i++) {
-        avarage += notes[i];
-    }
-    avarage = avarage / totalNotes;
-    disciplineNotesAvarage = formatterDisciplineNotesAvarage(disciplines, notes, avarage);
-    return disciplineNotesAvarage;
-}
+        const notas = input[i].notas;
+      
+        for (let j = 0; j < notas.length; j++) {
+            average += notas[j];
+            averageAll += notas[j];
+            totalNotes++;
+        }
 
-function calculatesAverageAll(avarageNotes) {
-    var avarageAll = 0;
-    for (let i = 0; i < avarageNotes.length; i++) {
-        avarageAll += parseFloat(avarageNotes[i]['média']);
+        
+        average = average / notas.length;
+        input[i].mediaDisciplina = average;
     }
-    avarageAll = avarageAll / avarageNotes.length;
-
-    return avarageAll.toFixed(2);
+    
+    averageAll = averageAll / totalNotes;
+    input['mediaGeral'] = averageAll;
+      
+    return input;
 }
